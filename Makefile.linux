@@ -1,0 +1,35 @@
+#!/usr/bin/make -f
+
+PROGRAM=OgreMeshy
+
+all: $(PROGRAM)
+
+SOURCES = $(shell find src -name "*.cpp")
+OBJS = $(SOURCES:.cpp=.o)
+
+PKG_CONFIG=OGRE OGRE-Bites OGRE-Overlay gdk-3.0 atk gtk+-3.0
+WX_CONFIG=std,aui
+
+PKG_CONFIG_CFLAGS=`wx-config --cflags $(WX_CONFIG)` `pkg-config --cflags $(PKG_CONFIG)`
+PKG_CONFIG_LDFLAGS=`pkg-config --libs-only-L $(PKG_CONFIG)`
+PKG_CONFIG_LIBS=`wx-config --libs $(WX_CONFIG)` `pkg-config --libs-only-l $(PKG_CONFIG)`
+
+CFLAGS= -Iinclude -O2 -g -Wall -Wno-unused-variable -Wno-unused-value -Wno-unused-but-set-variable
+LDFLAGS= -Wl,--as-needed -Wl,--no-undefined -Wl,--no-allow-shlib-undefined
+LIBS= 
+
+$(PROGRAM): $(OBJS)
+	g++ $(LDFLAGS) $(PKG_CONFIG_LDFLAGS) $+ -o $@ $(LIBS) $(PKG_CONFIG_LIBS)
+
+%.o: %.cpp
+	g++ -o $@ -c $+ $(CFLAGS) $(PKG_CONFIG_CFLAGS)
+
+%.o: %.c
+	gcc -o $@ -c $+ $(CFLAGS) $(PKG_CONFIG_CFLAGS)
+
+clean:
+	@rm -fv *.o *.a *~
+	@rm -fv */*.o */*.a */*~
+	@rm -fv $(PROGRAM)
+
+.PHONY: clean
