@@ -2,6 +2,10 @@
 
 #include <wx/colordlg.h>
 
+#ifdef __WXGTK3__
+#include <gdk/gdk.h>
+#endif
+
 #include <OgreSceneManager.h>
 #include <OgreCamera.h>
 #include <OgreLight.h>
@@ -153,8 +157,16 @@ Ogre::ColourValue LightsPanel::pickColour( const Ogre::ColourValue &inColour )
 	if( colourDlg.ShowModal() == wxID_OK )
 	{
 		float alpha = retVal.a;
+#ifdef __WXGTK3__
+		const GdkRGBA* gdk_rgba = colourDlg.GetColourData().GetColour();
+		retVal.r = gdk_rgba->red;
+		retVal.g = gdk_rgba->green;
+		retVal.b = gdk_rgba->blue;
+		retVal.a = alpha;
+#else
 		retVal.setAsABGR( colourDlg.GetColourData().GetColour().GetPixel() );
 		retVal.a = alpha;
+#endif
 	}
 
 	return retVal;
