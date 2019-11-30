@@ -1,7 +1,7 @@
 # Ogre Meshy #
 
-This is the official source code for OgreMeshy, a mesh viewer for [OGRE](www.ogre3d.org)
-Works on Windows and Linux. For prebuilt binaries, go check the [SourceForge project page](http://sourceforge.net/projects/ogremeshy/).
+This is an unofficial source code for OgreMeshy, a mesh viewer for [OGRE](www.ogre3d.org)
+Works on Windows and Linux.
 
 ## Requirements##
 * CMake
