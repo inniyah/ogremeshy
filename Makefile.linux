@@ -1,4 +1,4 @@
-#!/usr/bin/make -f
+#!/usr/bin/make -f Makefile.linux
 
 PROGRAM=OgreMeshy
 
@@ -27,9 +27,33 @@ $(PROGRAM): $(OBJS)
 %.o: %.c
 	gcc -o $@ -c $+ $(CFLAGS) $(PKG_CONFIG_CFLAGS)
 
+resources:
+	mkdir -pv Resources
+	mkdir -pv Resources/Fonts
+	mkdir -pv Resources/Models
+	mkdir -pv Resources/Icons
+	mkdir -pv Resources/Icons/32x32
+	mkdir -pv Resources/RTShaderLib
+
+	cp -rv scripts/Resources/Icons/32x32 Resources/Icons
+	cp -v scripts/Resources/OgreIcon.ico Resources
+
+	cp -rv scripts/Resources/Fonts/* Resources/Fonts
+	cp -rv scripts/Resources/Other/* Resources/Models
+	cp -rv scripts/Resources/RTShaderLib/* Resources/RTShaderLib
+
+	cp -v scripts/Resources/Blender/Axis.material Resources/Models
+	cp -v scripts/Resources/Blender/Axis.mesh Resources/Models
+	cp -v scripts/Resources/Blender/Bones/BoneMesh.material Resources/Models
+	cp -v scripts/Resources/Blender/Bones/Bones.png Resources/Models
+	cp -v scripts/Resources/Blender/Bones/BoneTip.mesh Resources/Models
+	cp -v scripts/Resources/Blender/Bones/BoneGlobe.mesh Resources/Models
+
+	mkdir -pv Plugins
+
 clean:
 	@rm -fv *.o *.a *~
 	@rm -fv */*.o */*.a */*~
 	@rm -fv $(PROGRAM)
 
-.PHONY: clean
+.PHONY: clean resources
