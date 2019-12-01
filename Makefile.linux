@@ -2,6 +2,14 @@
 
 PROGRAM=OgreMeshy
 
+# Build Mode (-mode=release -mode=debug)
+ifeq ($(mode), release)
+OPT_CFLAGS += -O2 -DNDEBUG
+else
+OPT_CFLAGS += -O0 -ggdb -DDEBUG
+mode := debug
+endif
+
 all: $(PROGRAM)
 
 SOURCES = $(shell find src -name "*.cpp")
@@ -14,7 +22,7 @@ PKG_CONFIG_CFLAGS=`wx-config --cflags $(WX_CONFIG)` `pkg-config --cflags $(PKG_C
 PKG_CONFIG_LDFLAGS=`pkg-config --libs-only-L $(PKG_CONFIG)`
 PKG_CONFIG_LIBS=`wx-config --libs $(WX_CONFIG)` `pkg-config --libs-only-l $(PKG_CONFIG)`
 
-CFLAGS= -Iinclude -O2 -g -Wall -Wno-unused-variable -Wno-unused-value -Wno-unused-but-set-variable
+CFLAGS= -Iinclude $(OPT_CFLAGS) -Wall -Wno-unused-variable -Wno-unused-value -Wno-unused-but-set-variable
 LDFLAGS= -Wl,--as-needed -Wl,--no-undefined -Wl,--no-allow-shlib-undefined
 LIBS= 
 
@@ -52,8 +60,7 @@ resources:
 	mkdir -pv Plugins
 
 clean:
-	@rm -fv *.o *.a *~
-	@rm -fv */*.o */*.a */*~
+	@rm -fv `find . -name '*.o' -o -name '*.a' -o -name '*~'`
 	@rm -fv $(PROGRAM)
 
 .PHONY: clean resources
