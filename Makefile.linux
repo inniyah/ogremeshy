@@ -15,7 +15,7 @@ all: $(PROGRAM)
 SOURCES = $(shell find src -name "*.cpp")
 OBJS = $(SOURCES:.cpp=.o)
 
-PKG_CONFIG=OGRE OGRE-Bites OGRE-Overlay gdk-3.0 atk gtk+-3.0
+PKG_CONFIG=OGRE OGRE-Bites OGRE-Overlay gdk-x11-3.0 atk gtk+-x11-3.0
 WX_CONFIG=std,aui
 
 PKG_CONFIG_CFLAGS=`wx-config --cflags $(WX_CONFIG)` `pkg-config --cflags $(PKG_CONFIG)`
