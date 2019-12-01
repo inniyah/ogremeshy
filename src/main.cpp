@@ -24,6 +24,16 @@
 
 #include "Core/wxOgreMeshViewerMainFrameImpl.h"
 
+#ifdef __WXGTK3__
+struct ForceX11 {
+    ForceX11() {
+       setenv("GDK_BACKEND", "x11", 1);
+    }
+};
+
+static struct ForceX11 forcex11;
+#endif
+
 class wxWidgetsApp : public wxApp
 {
 	CmdSettings parseCmdLine() const;

@@ -193,6 +193,7 @@ Ogre::String wxOgreRenderWindow::GetOgreHandle () const
 #ifdef __WXMSW__
 	// Handle for Windows systems
 	handle = Ogre::StringConverter::toString((size_t)((HWND)GetHandle()));
+
 #elif defined(__WXGTK__)
 	// Handle for GTK-based systems
 
@@ -200,15 +201,24 @@ Ogre::String wxOgreRenderWindow::GetOgreHandle () const
     gtk_widget_set_double_buffered( widget, FALSE );
 	gtk_widget_realize( widget );
 
+#if GTK_CHECK_VERSION(3,0,0)
     Window wid = gdk_x11_window_get_xid(gtk_widget_get_window(widget));
+#else
+    Window wid = gdk_x11_drawable_get_xid(gtk_widget_get_window(widget));
+#endif
 
 	std::stringstream str;
 	str << wid;
 
 	handle = str.str();
+
 #else
 	// Any other unsupported system
 #error Not supported on this platform.
+#endif
+
+#ifdef DEBUG
+	printf("Window Handler for Ogre: %s\n", handle.c_str());
 #endif
 
 	return handle;
