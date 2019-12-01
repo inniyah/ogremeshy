@@ -55,7 +55,7 @@ bool wxWidgetsApp::OnInit()
 
 	wxImage::AddHandler( new wxPNGHandler );
 
-    MeshyMainFrameImpl *window = new MeshyMainFrameImpl( 0, cmdSettings );
+    MeshyMainFrameImpl *window = new MeshyMainFrameImpl( NULL, cmdSettings );
     window->Show();
     SetTopWindow( window );
     return true;
