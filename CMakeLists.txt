@@ -5,7 +5,12 @@
 
 project( OgreMeshy )
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.14)
+
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(OGRE REQUIRED IMPORTED_TARGET OGRE)
+pkg_check_modules(OGRE-Overlay REQUIRED IMPORTED_TARGET OGRE-Overlay)
+pkg_check_modules(OGRE-Bites REQUIRED IMPORTED_TARGET OGRE-Bites)
 
 set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG" )
 
@@ -44,7 +49,8 @@ add_executable( ${PROJECT_NAME} WIN32 ${SOURCES} ${HEADERS} )
 target_link_libraries( ${PROJECT_NAME} ${OGRE_LIBRARIES} ${wxWidgets_LIBRARIES} )
 
 if( UNIX )
-	target_link_libraries( OgreMeshy ${GTK2_LIBRARIES} ${OPENGL_LIBRARIES} )
+	target_link_libraries( OgreMeshy ${GTK2_LIBRARIES} ${OPENGL_LIBRARIES}
+		PkgConfig::OGRE PkgConfig::OGRE-Overlay PkgConfig::OGRE-Bites)
 endif()
 
 #Copy resources to bin folders
