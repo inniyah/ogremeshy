@@ -49,6 +49,17 @@
 	#include <shlobj.h>
 #endif
 
+// New shared ptr API introduced in 1.10.1
+#if OGRE_VERSION >= 0x10A01
+	#define OGRE_RESET(_sharedPtr) ((_sharedPtr).reset())
+	#define OGRE_ISNULL(_sharedPtr) (!(_sharedPtr))
+	#define OGRE_STATIC_CAST(_resourcePtr, _castTo) (Ogre::static_pointer_cast<_castTo>(_resourcePtr))
+#else
+	#define OGRE_RESET(_sharedPtr) ((_sharedPtr).setNull())
+	#define OGRE_ISNULL(_sharedPtr) ((_sharedPtr).isNull())
+	#define OGRE_STATIC_CAST(_resourcePtr, _castTo) ((_resourcePtr).staticCast<Ogre::Material>(_castTo))
+#endif
+
 const Ogre::Quaternion c_CoordConventions[NumCoordinateConvention] =
 {
 	Ogre::Quaternion( Ogre::Degree( -90.0f ), Ogre::Vector3::UNIT_Z ),
@@ -993,7 +1004,7 @@ void MeshyMainFrameImpl::showMeshInfo()
 												wxString(wxT("No")) : wxString(wxT("Yes"))) );
 		m_meshInfoPage->AppendItem( subMeshId, wxString( ("Material: " + subMesh->getMaterialName()).c_str(), wxConvUTF8 ) );
 
-		if( subMesh->indexData && !subMesh->indexData->indexBuffer.isNull() )
+		if( subMesh->indexData && !OGRE_ISNULL(subMesh->indexData->indexBuffer) )
 		{
 			m_meshInfoPage->AppendItem( subMeshId, wxString(wxT("Indices: ")) << subMesh->indexData->indexCount
 												<< ((subMesh->indexData->indexBuffer->getType() ==
