@@ -1,5 +1,9 @@
 #!/usr/bin/make -f Makefile.linux
 
+CC= gcc
+CXX= g++
+RM= rm -f
+
 PROGRAM=OgreMeshy
 
 # Build Mode (-mode=release -mode=debug)
@@ -25,15 +29,21 @@ PKG_CONFIG_LIBS=`wx-config --libs $(WX_CONFIG)` `pkg-config --libs-only-l $(PKG_
 CFLAGS= -Iinclude $(OPT_CFLAGS) -Wall -Wno-unused-variable -Wno-unused-value -Wno-unused-but-set-variable
 LDFLAGS= -Wl,--as-needed -Wl,--no-undefined -Wl,--no-allow-shlib-undefined
 LIBS= 
+OPTS= -O2 -g
+DEFS=
+INCS=
+
+CSTD=-std=c11
+CPPSTD=-std=c++17
 
 $(PROGRAM): $(OBJS)
-	g++ $(LDFLAGS) $(PKG_CONFIG_LDFLAGS) $+ -o $@ $(LIBS) $(PKG_CONFIG_LIBS)
+	$(CXX) $(CPPSTD) $(CSTD) $(LDFLAGS) $(PKG_CONFIG_LDFLAGS) $+ -o $@ $(LIBS) $(PKG_CONFIG_LIBS)
 
 %.o: %.cpp
-	g++ -o $@ -c $+ $(CFLAGS) $(PKG_CONFIG_CFLAGS)
+	$(CXX) $(CPPSTD) $(OPTS) -o $@ -c $+ $(DEFS) $(INCS) $(CFLAGS) $(PKG_CONFIG_CFLAGS)
 
 %.o: %.c
-	gcc -o $@ -c $+ $(CFLAGS) $(PKG_CONFIG_CFLAGS)
+	$(CC) $(CSTD) $(OPTS) -o $@ -c $+ $(DEFS) $(INCS) $(CFLAGS) $(PKG_CONFIG_CFLAGS)
 
 resources:
 	mkdir -pv Resources
@@ -59,8 +69,16 @@ resources:
 
 	mkdir -pv Plugins
 
-clean:
-	@rm -fv `find . -name '*.o' -o -name '*.a' -o -name '*~'`
-	@rm -fv $(PROGRAM)
+depend: .depend
 
-.PHONY: clean resources
+.depend: $(SOURCES)
+	$(RM) ./.depend
+	$(CXX) $(CPPSTD) $(DEFS) $(INCS) $(CFLAGS) $(PKG_CONFIG_CFLAGS) -MM $^>>./.depend;
+
+clean:
+	$(RM) `find . -name '*.o' -o -name '*.a' -o -name '*~'`
+	$(RM) $(PROGRAM) .depend core
+
+include .depend
+
+.PHONY: all depend clean resources
